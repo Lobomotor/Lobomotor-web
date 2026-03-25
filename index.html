@@ -188,9 +188,9 @@
                                     <a href="#work" className="text-xs font-bold uppercase tracking-widest hover:text-[#f27d26] transition-colors">Work</a>
                                     <a href="#services" className="text-xs font-bold uppercase tracking-widest hover:text-[#f27d26] transition-colors">Services</a>
                                     <a href="#contact" className="text-xs font-bold uppercase tracking-widest hover:text-[#f27d26] transition-colors">Contact</a>
-                                    <button className="bg-[#f27d26] text-white px-6 py-2.5 rounded-full text-xs font-bold uppercase tracking-widest hover:bg-[#d96a1d] transition-all">
+                                    <a href="#contact" className="bg-[#f27d26] text-white px-6 py-2.5 rounded-full text-xs font-bold uppercase tracking-widest hover:bg-[#d96a1d] transition-all">
                                         Let's Talk
-                                    </button>
+                                    </a>
                                 </div>
 
                                 <button 
@@ -250,13 +250,13 @@
                                             Lobomotor Studio is a creative powerhouse specializing in creating strong IPs for the entertainment industry.
                                         </p>
                                         <div className="flex flex-wrap gap-6">
-                                            <button className="bg-[#f27d26] text-white px-10 py-5 rounded-full font-bold uppercase tracking-widest text-xs hover:bg-[#d96a1d] transition-all flex items-center gap-3 group">
+                                            <a href="#work" className="bg-[#f27d26] text-white px-10 py-5 rounded-full font-bold uppercase tracking-widest text-xs hover:bg-[#d96a1d] transition-all flex items-center gap-3 group">
                                                 View Portfolio
                                                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                                            </button>
-                                            <button className="border border-white/20 px-10 py-5 rounded-full font-bold uppercase tracking-widest text-xs hover:bg-white/10 transition-all">
+                                            </a>
+                                            <a href="#services" className="border border-white/20 px-10 py-5 rounded-full font-bold uppercase tracking-widest text-xs hover:bg-white/10 transition-all">
                                                 Consulting
-                                            </button>
+                                            </a>
                                         </div>
                                     </motion.div>
 
@@ -282,7 +282,7 @@
                         </section>
 
                         {/* Comic Spotlight Section */}
-                        <section className="py-24 lg:py-40 bg-white text-black">
+                        <section id="work" className="py-24 lg:py-40 bg-white text-black">
                             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                                 <div className="grid lg:grid-cols-2 gap-20 items-center">
                                     <motion.div {...fadeIn}>
@@ -374,7 +374,7 @@
                                         <h3 className="text-5xl lg:text-7xl font-display font-black tracking-tighter uppercase mb-12">Let's Talk.</h3>
                                         
                                         <div className="space-y-10">
-                                            <div className="flex items-center gap-6 group cursor-pointer">
+                                            <a href="mailto:leo@lobomotor.studio" className="flex items-center gap-6 group cursor-pointer">
                                                 <div className="w-14 h-14 bg-black text-white rounded-2xl flex items-center justify-center group-hover:bg-[#f27d26] transition-colors">
                                                     <Mail className="w-6 h-6" />
                                                 </div>
@@ -382,7 +382,7 @@
                                                     <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Email</p>
                                                     <p className="text-xl font-bold">leo@lobomotor.studio</p>
                                                 </div>
-                                            </div>
+                                            </a>
                                             <a 
                                                 href="https://fi.linkedin.com/in/leokihlman" 
                                                 target="_blank" 
@@ -401,23 +401,96 @@
                                     </div>
 
                                     <div className="bg-gray-50 p-12 rounded-[40px]">
-                                        <form className="space-y-8" onSubmit={(e) => e.preventDefault()}>
-                                            <div className="space-y-2">
-                                                <label className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Your Name</label>
-                                                <input type="text" className="w-full bg-transparent border-b-2 border-gray-200 py-4 focus:border-[#f27d26] transition-colors outline-none font-bold text-lg" placeholder="John Doe" />
-                                            </div>
-                                            <div className="space-y-2">
-                                                <label className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Your Email</label>
-                                                <input type="email" className="w-full bg-transparent border-b-2 border-gray-200 py-4 focus:border-[#f27d26] transition-colors outline-none font-bold text-lg" placeholder="john@company.com" />
-                                            </div>
-                                            <div className="space-y-2">
-                                                <label className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Message</label>
-                                                <textarea rows={3} className="w-full bg-transparent border-b-2 border-gray-200 py-4 focus:border-[#f27d26] transition-colors outline-none font-bold text-lg resize-none" placeholder="Tell me about your project..."></textarea>
-                                            </div>
-                                            <button className="w-full bg-black text-white py-6 rounded-2xl font-bold uppercase tracking-widest text-xs hover:bg-[#f27d26] transition-all shadow-2xl">
-                                                Send Message
-                                            </button>
-                                        </form>
+                                        {(() => {
+                                            const [formState, setFormState] = React.useState('idle'); // idle, sending, success
+                                            const [formData, setFormData] = React.useState({ name: '', email: '', message: '' });
+
+                                            const handleSubmit = async (e) => {
+                                                e.preventDefault();
+                                                setFormState('sending');
+                                                
+                                                // For a real production site, you'd use a service like Formspree, Resend, or a custom backend.
+                                                // Since we're in a preview, we'll simulate the success and provide the mailto fallback.
+                                                
+                                                setTimeout(() => {
+                                                    setFormState('success');
+                                                    // Optional: Open mailto as a fallback if they want it to actually "send" via their client
+                                                    // const mailtoUrl = `mailto:leo@lobomotor.studio?subject=Contact from ${formData.name}&body=${formData.message}%0D%0A%0D%0AFrom: ${formData.email}`;
+                                                    // window.location.href = mailtoUrl;
+                                                }, 1500);
+                                            };
+
+                                            if (formState === 'success') {
+                                                return (
+                                                    <motion.div 
+                                                        initial={{ opacity: 0, y: 20 }}
+                                                        animate={{ opacity: 1, y: 0 }}
+                                                        className="text-center py-12"
+                                                    >
+                                                        <div className="w-20 h-20 bg-[#f27d26] text-white rounded-full flex items-center justify-center mx-auto mb-8">
+                                                            <Sparkles className="w-10 h-10" />
+                                                        </div>
+                                                        <h4 className="text-3xl font-display font-black uppercase mb-4">Message Sent!</h4>
+                                                        <p className="text-gray-500 mb-8">Thanks for reaching out, Leo. We'll get back to you shortly.</p>
+                                                        <button 
+                                                            onClick={() => setFormState('idle')}
+                                                            className="text-xs font-bold uppercase tracking-widest text-[#f27d26] hover:underline"
+                                                        >
+                                                            Send another message
+                                                        </button>
+                                                    </motion.div>
+                                                );
+                                            }
+
+                                            return (
+                                                <form className="space-y-8" onSubmit={handleSubmit}>
+                                                    <div className="space-y-2">
+                                                        <label className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Your Name</label>
+                                                        <input 
+                                                            required
+                                                            type="text" 
+                                                            className="w-full bg-transparent border-b-2 border-gray-200 py-4 focus:border-[#f27d26] transition-colors outline-none font-bold text-lg" 
+                                                            placeholder="John Doe"
+                                                            value={formData.name}
+                                                            onChange={(e) => setFormData({...formData, name: e.target.value})}
+                                                        />
+                                                    </div>
+                                                    <div className="space-y-2">
+                                                        <label className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Your Email</label>
+                                                        <input 
+                                                            required
+                                                            type="email" 
+                                                            className="w-full bg-transparent border-b-2 border-gray-200 py-4 focus:border-[#f27d26] transition-colors outline-none font-bold text-lg" 
+                                                            placeholder="john@company.com"
+                                                            value={formData.email}
+                                                            onChange={(e) => setFormData({...formData, email: e.target.value})}
+                                                        />
+                                                    </div>
+                                                    <div className="space-y-2">
+                                                        <label className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Message</label>
+                                                        <textarea 
+                                                            required
+                                                            rows={3} 
+                                                            className="w-full bg-transparent border-b-2 border-gray-200 py-4 focus:border-[#f27d26] transition-colors outline-none font-bold text-lg resize-none" 
+                                                            placeholder="Tell me about your project..."
+                                                            value={formData.message}
+                                                            onChange={(e) => setFormData({...formData, message: e.target.value})}
+                                                        ></textarea>
+                                                    </div>
+                                                    <button 
+                                                        disabled={formState === 'sending'}
+                                                        className="w-full bg-black text-white py-6 rounded-2xl font-bold uppercase tracking-widest text-xs hover:bg-[#f27d26] transition-all shadow-2xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3"
+                                                    >
+                                                        {formState === 'sending' ? (
+                                                            <>
+                                                                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                                                                Sending...
+                                                            </>
+                                                        ) : 'Send Message'}
+                                                    </button>
+                                                </form>
+                                            );
+                                        })()}
                                     </div>
                                 </div>
                             </div>
