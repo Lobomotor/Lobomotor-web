@@ -409,15 +409,32 @@
                                                 e.preventDefault();
                                                 setFormState('sending');
                                                 
-                                                // For a real production site, you'd use a service like Formspree, Resend, or a custom backend.
-                                                // Since we're in a preview, we'll simulate the success and provide the mailto fallback.
-                                                
-                                                setTimeout(() => {
-                                                    setFormState('success');
-                                                    // Optional: Open mailto as a fallback if they want it to actually "send" via their client
-                                                    // const mailtoUrl = `mailto:leo@lobomotor.studio?subject=Contact from ${formData.name}&body=${formData.message}%0D%0A%0D%0AFrom: ${formData.email}`;
-                                                    // window.location.href = mailtoUrl;
-                                                }, 1500);
+                                                try {
+                                                    const response = await fetch('https://formspree.io/f/mykbgqop', {
+                                                        method: 'POST',
+                                                        headers: {
+                                                            'Content-Type': 'application/json',
+                                                            'Accept': 'application/json'
+                                                        },
+                                                        body: JSON.stringify(formData)
+                                                    });
+                                                    
+                                                    if (response.ok) {
+                                                        setFormState('success');
+                                                        setFormData({ name: '', email: '', message: '' });
+                                                    } else {
+                                                        const data = await response.json();
+                                                        if (data && data.errors) {
+                                                            alert(data.errors.map(error => error.message).join(", "));
+                                                        } else {
+                                                            alert("Oops! There was a problem submitting your form");
+                                                        }
+                                                        setFormState('idle');
+                                                    }
+                                                } catch (error) {
+                                                    alert("Oops! There was a problem submitting your form");
+                                                    setFormState('idle');
+                                                }
                                             };
 
                                             if (formState === 'success') {
@@ -431,7 +448,7 @@
                                                             <Sparkles className="w-10 h-10" />
                                                         </div>
                                                         <h4 className="text-3xl font-display font-black uppercase mb-4">Message Sent!</h4>
-                                                        <p className="text-gray-500 mb-8">Thanks for reaching out, Leo. We'll get back to you shortly.</p>
+                                                        <p className="text-gray-500 mb-8">Thanks for reaching out. Your message has been sent to Leo.</p>
                                                         <button 
                                                             onClick={() => setFormState('idle')}
                                                             className="text-xs font-bold uppercase tracking-widest text-[#f27d26] hover:underline"
@@ -448,6 +465,7 @@
                                                         <label className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Your Name</label>
                                                         <input 
                                                             required
+                                                            name="name"
                                                             type="text" 
                                                             className="w-full bg-transparent border-b-2 border-gray-200 py-4 focus:border-[#f27d26] transition-colors outline-none font-bold text-lg" 
                                                             placeholder="John Doe"
@@ -459,6 +477,7 @@
                                                         <label className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Your Email</label>
                                                         <input 
                                                             required
+                                                            name="email"
                                                             type="email" 
                                                             className="w-full bg-transparent border-b-2 border-gray-200 py-4 focus:border-[#f27d26] transition-colors outline-none font-bold text-lg" 
                                                             placeholder="john@company.com"
@@ -470,6 +489,7 @@
                                                         <label className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Message</label>
                                                         <textarea 
                                                             required
+                                                            name="message"
                                                             rows={3} 
                                                             className="w-full bg-transparent border-b-2 border-gray-200 py-4 focus:border-[#f27d26] transition-colors outline-none font-bold text-lg resize-none" 
                                                             placeholder="Tell me about your project..."
