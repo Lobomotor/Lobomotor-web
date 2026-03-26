@@ -111,6 +111,7 @@
 
         // Framer Motion global is usually 'Motion' or 'framerMotion' in UMD
         const MotionGlobal = window['Motion'] || window['framerMotion'] || {};
+        const AnimatePresence = MotionGlobal.AnimatePresence || (({children}) => <>{children}</>);
         const motion = MotionGlobal.motion || {
             div: (props) => <div {...props} />,
             section: (props) => <section {...props} />,
@@ -124,6 +125,22 @@
 
         function App() {
             const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+
+            // Team Carousel State
+            const teamImages = [
+                "https://i.postimg.cc/vB19TrKm/1682011455606.jpg",
+                "https://i.postimg.cc/FKqyvCK3/Gemini-Generated-Image-vw0e6evw0e6evw0e.png",
+                "https://i.postimg.cc/5t7V2LcQ/Gemini-Generated-Image-b3euyrb3euyrb3eu-(1).png",
+                "https://i.postimg.cc/c4nw7BXG/Nimeton-esitys.jpg"
+            ];
+            const [currentTeamImage, setCurrentTeamImage] = React.useState(0);
+
+            React.useEffect(() => {
+                const timer = setInterval(() => {
+                    setCurrentTeamImage((prev) => (prev + 1) % teamImages.length);
+                }, 4000);
+                return () => clearInterval(timer);
+            }, []);
 
             // Assets
             const mascotUrl = "https://i.postimg.cc/26kW2Q78/susi.png";
@@ -185,6 +202,7 @@
                                 </a>
                                 
                                 <div className="hidden md:flex items-center gap-10">
+                                    <a href="#team" className="text-xs font-bold uppercase tracking-widest hover:text-[#f27d26] transition-colors">Team</a>
                                     <a href="#work" className="text-xs font-bold uppercase tracking-widest hover:text-[#f27d26] transition-colors">Work</a>
                                     <a href="#services" className="text-xs font-bold uppercase tracking-widest hover:text-[#f27d26] transition-colors">Services</a>
                                     <a href="#contact" className="text-xs font-bold uppercase tracking-widest hover:text-[#f27d26] transition-colors">Contact</a>
@@ -211,6 +229,7 @@
                                 animate={{ opacity: 1, height: 'auto' }}
                                 className="md:hidden bg-black border-b border-white/10 px-4 py-8 space-y-6"
                             >
+                                <a href="#team" className="block text-xl font-bold uppercase tracking-widest" onClick={() => setIsMenuOpen(false)}>Team</a>
                                 <a href="#work" className="block text-xl font-bold uppercase tracking-widest" onClick={() => setIsMenuOpen(false)}>Work</a>
                                 <a href="#services" className="block text-xl font-bold uppercase tracking-widest" onClick={() => setIsMenuOpen(false)}>Services</a>
                                 <a href="#contact" className="block text-xl font-bold uppercase tracking-widest" onClick={() => setIsMenuOpen(false)}>Contact</a>
@@ -276,6 +295,74 @@
                                         </div>
                                         {/* Decorative glow */}
                                         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-[#f27d26]/10 blur-[100px] -z-10 rounded-full"></div>
+                                    </motion.div>
+                                </div>
+                            </div>
+                        </section>
+                        
+                        {/* Team Section */}
+                        <section id="team" className="py-24 lg:py-40 relative overflow-hidden bg-[#0a0a0a]">
+                            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                                <div className="grid lg:grid-cols-2 gap-20 items-center">
+                                    <motion.div 
+                                        {...fadeIn}
+                                        className="relative"
+                                    >
+                                        <div className="relative aspect-square rounded-[40px] overflow-hidden border-8 border-white/5 shadow-2xl bg-black">
+                                            <AnimatePresence mode="wait">
+                                                <motion.img 
+                                                    key={currentTeamImage}
+                                                    src={teamImages[currentTeamImage]} 
+                                                    alt="Leo Kihlman" 
+                                                    initial={{ opacity: 0, scale: 1.1 }}
+                                                    animate={{ opacity: 1, scale: 1 }}
+                                                    exit={{ opacity: 0, scale: 0.9 }}
+                                                    transition={{ duration: 0.8 }}
+                                                    className="absolute inset-0 w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700"
+                                                    referrerPolicy="no-referrer"
+                                                />
+                                            </AnimatePresence>
+                                            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent pointer-events-none"></div>
+                                            <div className="absolute bottom-8 left-8 pointer-events-none">
+                                                <p className="text-[#f27d26] font-display font-black uppercase text-4xl tracking-tighter leading-none">Leo Kihlman</p>
+                                                <p className="text-white/60 font-bold uppercase tracking-[0.2em] text-xs mt-2">Founder & Creative Director</p>
+                                            </div>
+                                            {/* Carousel Indicators */}
+                                            <div className="absolute bottom-8 right-8 flex gap-2">
+                                                {teamImages.map((_, idx) => (
+                                                    <div 
+                                                        key={idx}
+                                                        className={`w-2 h-2 rounded-full transition-all duration-300 ${idx === currentTeamImage ? 'bg-[#f27d26] w-6' : 'bg-white/30'}`}
+                                                    />
+                                                ))}
+                                            </div>
+                                        </div>
+                                        {/* Decorative elements */}
+                                        <div className="absolute -top-10 -right-10 w-40 h-40 bg-[#f27d26]/20 blur-[100px] rounded-full"></div>
+                                        <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-[#f27d26]/20 blur-[100px] rounded-full"></div>
+                                    </motion.div>
+
+                                    <motion.div {...fadeIn}>
+                                        <h2 className="text-xs font-bold uppercase tracking-[0.4em] text-gray-500 mb-6">The Team</h2>
+                                        <h3 className="text-5xl lg:text-7xl font-display font-black tracking-tighter uppercase mb-8 leading-none">
+                                            Meet <span className="text-[#f27d26]">Papa Leo</span>
+                                        </h3>
+                                        <div className="space-y-6 text-xl text-gray-400 mb-10 leading-relaxed font-light italic">
+                                            <p>
+                                                "Hi, the main man here. I have been working in game industry for 27 years now and have seen it all. From the early days of Finnish games industry with PC and N-Gage to mobile F2P and now experiencing the latest AI disruption."
+                                            </p>
+                                            <p className="not-italic">
+                                                I started out as a 3D artist and game designer in the '90s and for the last 10+ years been leading and guiding game teams and studios around the world. Lobomotor Studio has been my outlet of creating entertainment with no compromises. The Embassy-comic book being the first big achievement on my bucket list and now looking to make my first indie-game.
+                                            </p>
+                                        </div>
+                                        <div className="flex items-center gap-6">
+                                            <div className="h-px flex-grow bg-white/10"></div>
+                                            <div className="flex gap-4">
+                                                <a href="https://fi.linkedin.com/in/leokihlman" target="_blank" rel="noopener noreferrer" className="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center hover:bg-[#f27d26] hover:border-[#f27d26] transition-all">
+                                                    <Linkedin className="w-5 h-5" />
+                                                </a>
+                                            </div>
+                                        </div>
                                     </motion.div>
                                 </div>
                             </div>
@@ -535,6 +622,7 @@
                                 
                                 <div className="flex gap-12 text-[10px] font-bold uppercase tracking-[0.2em] text-gray-500">
                                     <a href="https://fi.linkedin.com/in/leokihlman" target="_blank" rel="noopener noreferrer" className="hover:text-[#f27d26] transition-colors">LinkedIn</a>
+                                    <a href="#team" className="hover:text-white transition-colors">Team</a>
                                     <a href="#work" className="hover:text-white transition-colors">Portfolio</a>
                                     <a href="#services" className="hover:text-white transition-colors">Consulting</a>
                                 </div>
