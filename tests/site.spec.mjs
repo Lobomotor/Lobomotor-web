@@ -73,11 +73,9 @@ test('contact success and failure paths use mocked Formspree responses', async (
 });
 
 test('team carousel advances', async ({ page }) => {
-  await page.clock.install();
   await page.goto('/');
   await expect(page.getByAltText('Leo Kihlman', { exact: true })).toHaveAttribute('src', './media/team-leo.jpg');
-  await page.clock.runFor(5000);
-  await expect(page.getByAltText('Leo Kihlman', { exact: true })).toHaveAttribute('src', './media/team-studio-1.png');
+  await expect(page.getByAltText('Leo Kihlman', { exact: true })).toHaveAttribute('src', './media/team-studio-1.png', { timeout: 7000 });
 });
 
 test('internal links resolve and preview server does not expose source', async ({ page, request }) => {
