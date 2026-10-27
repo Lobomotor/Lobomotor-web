@@ -33,7 +33,9 @@ The preview serves only `dist/`, not source or credentials. `PORT` and `HOST` ov
 | `src/page.html` | Document shell, title and existing Google Fonts links |
 | `tailwind.config.mjs` | Existing fonts, colours and utility settings |
 | `media/` | Exact copies of original images; provenance in `sources.json` |
-| `scripts/` | Cross-platform build and preview commands |
+| `scripts/` | Cross-platform build, checks and preview commands |
+| `contact-config.json` | Public Google Apps Script deployment URL; never credentials |
+| `backend/apps-script/` | Owner-controlled email handler and one-time setup guide |
 | `index.html`, `assets/` | Generated files used by Pages; commit after building |
 | `CNAME`, `.nojekyll` | Custom domain and static publishing support |
 
@@ -50,7 +52,7 @@ npm audit --audit-level=high
 npm test
 ```
 
-On Linux use `npx playwright install --with-deps chromium` if browser system dependencies are missing. `npm run test:static` checks the built output, real React rendering, local assets and preview-server boundaries without a browser. Browser tests cover desktop/mobile Chromium: runtime errors, icons, local images, horizontal overflow, navigation, internal links, carousel, game opening/closing, and contact success/failure. Formspree and the game response are mocked; no real messages are sent. Google Fonts is stubbed in CI to avoid making its availability a prerequisite.
+On Linux use `npx playwright install --with-deps chromium` if browser system dependencies are missing. `npm run test:static` checks the built output, real React rendering, local assets and preview-server boundaries without a browser. Browser tests cover desktop/mobile Chromium: runtime errors, icons, local images, horizontal overflow, navigation, internal links, carousel, game opening/closing, and contact success/failure. The Google contact endpoint, MailApp and the game response are mocked; no real messages are sent. Google Fonts is stubbed in CI to avoid making its availability a prerequisite.
 
 The `Site checks` workflow's `validate` job runs on pull requests into `main`, pushes to `main` or `maintenance/**`, and manual dispatch. It checks lint, build reproducibility, dependency advisories and browser behaviour. It never deploys. Download `site-preview-<commit>` and `browser-test-report` from a successful run; the browser report includes desktop/mobile screenshots. Serve the extracted preview directory with a local static server or an approved preview host. This setup does not create automatic per-PR GitHub Pages preview URLs.
 
@@ -76,7 +78,7 @@ Find the last good Pages release/commit. Create a branch reverting the bad relea
 ## External services
 
 - **Google Fonts:** original Inter and Space Grotesk stylesheets; still external.
-- **Formspree:** `https://formspree.io/f/mykbgqop`; delivery settings/limits belong to that account. Real delivery testing requires authorization. The public form ID is not a secret.
+- **Contact email:** owner-controlled Google Apps Script sends to `leo@lobomotor.studio`, with visitor email as Reply-To. See [setup instructions](backend/apps-script/README.md). Google authorization and a valid `/exec` URL in `contact-config.json` are required before publishing. Never publish with an empty endpoint. The former Formspree endpoint is not used by this version.
 - **Ponganoid:** `https://ponganoid-777006893258.us-west1.run.app`; separately hosted game, outside this repository's code/billing/deployment.
 - **LinkedIn and Sarjakuvakauppa:** existing outgoing links preserved.
 - **Squarespace DNS / Google Workspace:** unchanged. Website publishing requires no email or DNS access.

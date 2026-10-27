@@ -32,6 +32,7 @@ export async function buildSite() {
   await writeFile('dist/index.html', html);
   await cp('media', 'dist/media', { recursive: true });
   await cp('CNAME', 'dist/CNAME');
+  await cp('contact-config.json', 'dist/contact-config.json');
   await writeFile('dist/.nojekyll', '');
   // Commit these generated files with source changes; CI verifies they match.
   await rm('assets', { recursive: true, force: true });

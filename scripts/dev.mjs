@@ -14,7 +14,7 @@ async function rebuild() {
   catch (error) { console.error(error); }
   finally { building = false; if (pending) { pending = false; await rebuild(); } }
 }
-for (const entry of ['src', 'media', 'tailwind.config.mjs']) {
+for (const entry of ['src', 'media', 'tailwind.config.mjs', 'contact-config.json']) {
   watch(entry, { recursive: true }, () => {
     clearTimeout(timer);
     timer = setTimeout(rebuild, 150);
