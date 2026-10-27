@@ -117,6 +117,34 @@ function ContactForm() {
     );
 }
 
+function GameWindow({ onClose }) {
+    const dialogRef = React.useRef(null);
+    React.useEffect(() => {
+        const dialog = dialogRef.current;
+        const previousOverflow = document.body.style.overflow;
+        document.body.style.overflow = 'hidden';
+        dialog.showModal();
+        return () => {
+            dialog.close();
+            document.body.style.overflow = previousOverflow;
+        };
+    }, []);
+    return (
+        <dialog ref={dialogRef} className="game-window" aria-labelledby="game-window-title"
+            onCancel={event => { event.preventDefault(); onClose(); }}>
+            <div className="game-window-header">
+                <h2 id="game-window-title">Ponganoid</h2>
+                <div className="flex items-center gap-4">
+                    <a href="https://ponganoid-777006893258.us-west1.run.app" target="_blank" rel="noopener noreferrer" className="text-sm underline">Open in new tab</a>
+                    <button autoFocus onClick={onClose} className="rounded-full bg-[#f27d26] px-4 py-2 text-sm font-bold">Close Game</button>
+                </div>
+            </div>
+            <iframe src="https://ponganoid-777006893258.us-west1.run.app"
+                className="game-window-frame" title="Ponganoid Game" allow="autoplay; fullscreen" />
+        </dialog>
+    );
+}
+
 function App() {
     const [isMenuOpen, setIsMenuOpen] = React.useState(false);
     const [isPlaying, setIsPlaying] = React.useState(false);
@@ -268,10 +296,10 @@ function App() {
                                 </p>
                                 <div className="flex flex-wrap gap-6">
                                     <button
-                                        onClick={() => setIsPlaying(!isPlaying)}
+                                        onClick={() => setIsPlaying(true)}
                                         className="bg-[#f27d26] text-white px-10 py-5 rounded-full font-bold uppercase tracking-widest text-xs hover:bg-[#d96a1d] transition-all flex items-center gap-3 group"
                                     >
-                                        {isPlaying ? 'Close Game' : 'PLAY A GAME'}
+                                        PLAY A GAME
                                         <Gamepad2 className="w-4 h-4 group-hover:rotate-12 transition-transform" />
                                     </button>
                                 </div>
@@ -281,20 +309,9 @@ function App() {
                                 initial={{ opacity: 0, scale: 0.8 }}
                                 animate={{ opacity: 1, scale: 1 }}
                                 transition={{ duration: 1, delay: 0.2 }}
-                                className={`relative ${isPlaying ? 'block w-full' : 'hidden lg:block'}`}
+                                className="relative hidden lg:block"
                             >
                                 <div className="relative z-10">
-                                    {isPlaying ? (
-                                        <div className="relative rounded-3xl overflow-hidden shadow-[0_0_50px_rgba(242,125,38,0.5)] border border-[#f27d26]/30 bg-black aspect-[4/3.5] w-full max-h-[85vh]">
-                                            <iframe
-                                                src="https://ponganoid-777006893258.us-west1.run.app"
-                                                className="absolute inset-0 w-full h-full border-none"
-                                                title="Ponganoid Game"
-                                                allow="autoplay; fullscreen"
-                                                scrolling="no"
-                                            />
-                                        </div>
-                                    ) : (
                                         <div className="animate-float">
                                             <img
                                                 src={mascotUrl}
@@ -303,7 +320,6 @@ function App() {
                                                 referrerPolicy="no-referrer"
                                             />
                                         </div>
-                                    )}
                                 </div>
                                 {/* Decorative glow */}
                                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-[#f27d26]/10 blur-[100px] -z-10 rounded-full"></div>
@@ -506,6 +522,8 @@ function App() {
                     </div>
                 </section>
             </main>
+
+            {isPlaying && <GameWindow onClose={() => setIsPlaying(false)} />}
 
             {/* Footer */}
             <footer className="bg-[#050505] border-t border-white/10 py-20">

@@ -37,3 +37,30 @@
 .animate-float {
     animation: float 4s ease-in-out infinite;
 }
+
+/* Native dialog keeps the game above the page and traps keyboard focus. */
+.game-window {
+  position: fixed;
+  inset: 0;
+  margin: auto;
+  padding: 0;
+  width: min(1200px, calc(100vw - 24px));
+  height: min(960px, calc(100dvh - 24px));
+  max-width: none;
+  max-height: none;
+  border: 1px solid #f27d2666;
+  border-radius: 20px;
+  background: #050505;
+  color: white;
+  box-shadow: 0 0 50px #f27d2640;
+  overflow: hidden;
+}
+.game-window[open] { display: flex; flex-direction: column; }
+.game-window::backdrop { background: #000d; }
+.game-window-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 16px; border-bottom: 1px solid #ffffff26; flex-shrink: 0; }
+.game-window-header h2 { font-weight: 700; }
+.game-window-frame { width: 100%; flex: 1; min-height: 0; border: 0; background: #050505; }
+@media (max-width: 640px) {
+  .game-window { width: 100vw; height: 100dvh; border-radius: 0; }
+  .game-window-header { padding: 8px; font-size: 14px; }
+}
