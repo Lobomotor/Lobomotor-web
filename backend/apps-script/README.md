@@ -1,6 +1,6 @@
 # Direct contact email using Google Workspace
 
-Status: prepared for review, **not deployed or authorized**. `contact-config.json` deliberately has no endpoint. Do not merge/publish this change until the owner completes setup, the deployed endpoint is configured, and delivery is verified with the owner's permission.
+Before publication, the owner must authorize and deploy the handler, configure its public `/exec` URL in `contact-config.json`, and verify delivery with the owner's permission. Repository code and mocked tests alone do not prove inbox delivery.
 
 The visitor fills in the existing website form and presses Send Message. A small script owned by Leo sends a plain-text email to **leo@lobomotor.studio** using Google's MailApp service. The visitor's email is Reply-To, so replying in Gmail addresses the visitor. The visitor needs no Google account, email application, or Formspree account. Mail still uses Google's infrastructure; the browser and GitHub Pages cannot send mail on their own.
 
