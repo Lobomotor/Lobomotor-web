@@ -1,35 +1,33 @@
 {
-  "name": "react-example",
+  "name": "lobomotor-studio",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
+  "engines": {
+    "node": ">=24 <25"
+  },
   "scripts": {
-    "dev": "tsx server.ts",
-    "build": "mkdir -p dist && cp index.html dist/index.html",
-    "preview": "tsx server.ts",
-    "clean": "rm -rf dist",
-    "lint": "echo 'No linting needed for standalone index.html'"
+    "build": "node scripts/build.mjs",
+    "dev": "node scripts/dev.mjs",
+    "preview": "node scripts/serve.mjs",
+    "lint": "eslint src scripts tests *.mjs",
+    "test": "playwright test",
+    "check": "npm run lint && npm run build && npm run test:static && npm test",
+    "test:static": "node --test scripts/check-build.test.mjs"
   },
   "dependencies": {
-    "@google/genai": "^1.29.0",
-    "@tailwindcss/vite": "^4.1.14",
-    "@vitejs/plugin-react": "^5.0.4",
-    "dotenv": "^17.2.3",
-    "express": "^4.21.2",
-    "lucide-react": "^0.546.0",
-    "motion": "^12.23.24",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "serve": "^14.2.6",
-    "vite": "^6.2.0"
+    "framer-motion": "11.11.11",
+    "lucide-react": "0.460.0",
+    "react": "18.3.1",
+    "react-dom": "18.3.1"
   },
   "devDependencies": {
-    "@types/express": "^4.17.21",
-    "@types/node": "^22.14.0",
-    "autoprefixer": "^10.4.21",
-    "tailwindcss": "^4.1.14",
-    "tsx": "^4.21.0",
-    "typescript": "~5.8.2",
-    "vite": "^6.2.0"
+    "@playwright/test": "1.58.2",
+    "esbuild": "0.28.2",
+    "eslint": "10.13.0",
+    "eslint-plugin-react-hooks": "7.1.1",
+    "globals": "17.13.0",
+    "postcss": "8.5.32",
+    "tailwindcss": "3.4.19"
   }
 }

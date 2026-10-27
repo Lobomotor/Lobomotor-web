@@ -1,0 +1,50 @@
+name: Site checks
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main, 'maintenance/**']
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: site-checks-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run build
+      - name: Verify committed publishing files match source
+        run: |
+          git diff --exit-code -- index.html assets .nojekyll CNAME
+          test -z "$(git ls-files --others --exclude-standard -- assets)"
+      - run: npm run test:static
+      - run: npm audit --audit-level=high
+      - run: npx playwright install --with-deps chromium
+      - run: npm test
+      - name: Upload tested preview
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: site-preview-${{ github.sha }}
+          path: dist/
+          include-hidden-files: true
+          retention-days: 14
+      - name: Upload browser test report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: browser-test-report
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 14
