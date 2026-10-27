@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { createRequire } from 'node:module';
 import vm from 'node:vm';
+import path from 'node:path';
 import { build } from 'esbuild';
 import { serve } from './serve.mjs';
 
@@ -24,7 +25,7 @@ test('published HTML uses existing local hashed assets and matches the preview',
 test('React renders content, real SVG icons, local images and labelled form fields', async () => {
   const source = (await readFile('src/main.jsx', 'utf8'))
     .replace("createRoot(document.getElementById('root')).render(<App />);", 'export { App };');
-  const result = await build({ stdin: { contents: source, resolveDir: process.cwd(), loader: 'jsx' }, bundle: true, write: false, platform: 'node', format: 'cjs', packages: 'external' });
+  const result = await build({ stdin: { contents: source, resolveDir: path.resolve('src'), loader: 'jsx' }, bundle: true, write: false, platform: 'node', format: 'cjs', packages: 'external' });
   const module = { exports: {} };
   vm.runInNewContext(result.outputFiles[0].text, { module, exports: module.exports, require });
   const React = require('react');

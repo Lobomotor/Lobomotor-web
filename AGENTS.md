@@ -6,7 +6,8 @@
 - Work on a separate branch and prepare a pull request with a tested preview.
 - Never merge into `main`, push directly to `main`, or publish without Leo's explicit approval of the specific reviewed version. Approval to prepare fixes is not approval to publish.
 - Never change Squarespace DNS, the custom domain, Google Workspace mail records, Formspree configuration or the separate Ponganoid deployment without explicit authorization.
-- Mock contact form test submissions; never send actual test messages.
+- Mock contact form test submissions and MailApp. Actual delivery testing requires Leo's explicit authorization.
+- For the Google contact handler, do not merge or publish until the owner has authorized/deployed it, `contact-config.json` has its real `/exec` URL, and the integration has been verified. See `backend/apps-script/README.md`.
 - Do not add paid hosting, accounts, analytics or tracking without approval.
 
 ## Implementation

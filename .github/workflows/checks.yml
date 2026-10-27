@@ -25,7 +25,7 @@ jobs:
       - run: npm run build
       - name: Verify committed publishing files match source
         run: |
-          git diff --exit-code -- index.html assets .nojekyll CNAME
+          git diff --exit-code -- index.html assets .nojekyll CNAME contact-config.json
           test -z "$(git ls-files --others --exclude-standard -- assets)"
       - run: npm run test:static
       - run: npm audit --audit-level=high

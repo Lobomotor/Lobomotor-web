@@ -1,40 +1,31 @@
 import React from 'react';
+import { sendContactMessage } from './contact.js';
 import { createRoot } from 'react-dom/client';
 import { AnimatePresence, motion } from 'framer-motion';
 import { BookOpen, Gamepad2, Linkedin, Mail, Sparkles, Users2, Zap, ExternalLink } from 'lucide-react';
 
 function ContactForm() {
     const [formState, setFormState] = React.useState('idle'); // idle, sending, success
-    const [formData, setFormData] = React.useState({ name: '', email: '', message: '' });
+    const [formData, setFormData] = React.useState({ name: '', email: '', message: '', website: '' });
+    const [formError, setFormError] = React.useState('');
+    const lastAttempt = React.useRef(null);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if (formState === 'sending') return;
+        setFormError('');
         setFormState('sending');
-
+        const fingerprint = JSON.stringify(formData);
+        if (!lastAttempt.current || lastAttempt.current.fingerprint !== fingerprint) {
+            lastAttempt.current = { fingerprint, requestId: crypto.randomUUID() };
+        }
         try {
-            const response = await fetch('https://formspree.io/f/mykbgqop', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
-                },
-                body: JSON.stringify(formData)
-            });
-
-            if (response.ok) {
-                setFormState('success');
-                setFormData({ name: '', email: '', message: '' });
-            } else {
-                const data = await response.json();
-                if (data && data.errors) {
-                    alert(data.errors.map(error => error.message).join(", "));
-                } else {
-                    alert("Oops! There was a problem submitting your form");
-                }
-                setFormState('idle');
-            }
+            await sendContactMessage(formData, lastAttempt.current.requestId);
+            setFormState('success');
+            setFormData({ name: '', email: '', message: '', website: '' });
+            lastAttempt.current = null;
         } catch (error) {
-            alert("Oops! There was a problem submitting your form");
+            setFormError(error.message || 'Your message could not be sent. Please email leo@lobomotor.studio.');
             setFormState('idle');
         }
     };
@@ -62,12 +53,18 @@ function ContactForm() {
     }
 
     return (
-        <form className="space-y-8" onSubmit={handleSubmit}>
+        <form className="space-y-8" onSubmit={handleSubmit} aria-busy={formState === 'sending'}>
+            <div className="hidden" aria-hidden="true">
+                <label htmlFor="contact-website">Website</label>
+                <input id="contact-website" name="website" tabIndex={-1} autoComplete="off"
+                    value={formData.website} onChange={(e) => setFormData({...formData, website: e.target.value})} />
+            </div>
             <div className="space-y-2">
                 <label htmlFor="contact-name" className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Your Name</label>
                 <input
                     required
                     id="contact-name"
+                    maxLength={100}
                     name="name"
                     type="text"
                     className="w-full bg-transparent border-b-2 border-gray-200 py-4 focus:border-[#f27d26] transition-colors outline-none font-bold text-lg"
@@ -81,6 +78,7 @@ function ContactForm() {
                 <input
                     required
                     id="contact-email"
+                    maxLength={254}
                     name="email"
                     type="email"
                     className="w-full bg-transparent border-b-2 border-gray-200 py-4 focus:border-[#f27d26] transition-colors outline-none font-bold text-lg"
@@ -94,6 +92,7 @@ function ContactForm() {
                 <textarea
                     required
                     id="contact-message"
+                    maxLength={5000}
                     name="message"
                     rows={3}
                     className="w-full bg-transparent border-b-2 border-gray-200 py-4 focus:border-[#f27d26] transition-colors outline-none font-bold text-lg resize-none"
@@ -102,6 +101,7 @@ function ContactForm() {
                     onChange={(e) => setFormData({...formData, message: e.target.value})}
                 ></textarea>
             </div>
+            {formError && <p role="alert" className="text-sm text-red-700">{formError}</p>}
             <button
                 disabled={formState === 'sending'}
                 className="w-full bg-black text-white py-6 rounded-2xl font-bold uppercase tracking-widest text-xs hover:bg-[#f27d26] transition-all shadow-2xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3"
