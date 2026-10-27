@@ -1,0 +1,31 @@
+name: Recover original media
+on:
+  push:
+    branches: [maintenance/reliable-updates]
+    paths: [.github/workflows/recover-media.yml]
+permissions:
+  contents: write
+jobs:
+  recover:
+    if: github.ref == 'refs/heads/maintenance/reliable-updates'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v6
+      - name: Recover and verify original image
+        run: |
+          python3 - <<'PY'
+          import hashlib, pathlib, urllib.request
+          image = pathlib.Path('media/team-studio-2.png')
+          image.parent.mkdir(exist_ok=True)
+          data = urllib.request.urlopen('https://i.postimg.cc/6qLkvv7k/Gemini-Generated-Image-r8ogbir8ogbir8og.png', timeout=60).read()
+          assert hashlib.sha256(data).hexdigest() == '1ebe4d89a918f3fcb80bde16cf9d80513b0dd758db74a3168d62ac49448ed40c', 'Original image checksum mismatch'
+          image.write_bytes(data)
+          PY
+      - name: Commit recovered image to maintenance branch only
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add media/team-studio-2.png
+          git commit -m "Restore original studio image for maintenance preview"
+          git push origin HEAD:maintenance/reliable-updates
