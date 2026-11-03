@@ -129,14 +129,19 @@ function GameWindow({ onClose }) {
             document.body.style.overflow = previousOverflow;
         };
     }, []);
+    const closeGame = () => {
+        dialogRef.current.close();
+        onClose();
+    };
+
     return (
         <dialog ref={dialogRef} className="game-window" aria-labelledby="game-window-title"
-            onCancel={event => { event.preventDefault(); onClose(); }}>
+            onCancel={event => { event.preventDefault(); closeGame(); }}>
             <div className="game-window-header">
                 <h2 id="game-window-title">Ponganoid</h2>
                 <div className="flex items-center gap-4">
                     <a href="https://ponganoid-777006893258.us-west1.run.app" target="_blank" rel="noopener noreferrer" className="text-sm underline">Open in new tab</a>
-                    <button autoFocus onClick={onClose} className="rounded-full bg-[#f27d26] px-4 py-2 text-sm font-bold">Close Game</button>
+                    <button autoFocus onClick={closeGame} className="rounded-full bg-[#f27d26] px-4 py-2 text-sm font-bold">Close Game</button>
                 </div>
             </div>
             <iframe src="https://ponganoid-777006893258.us-west1.run.app"
@@ -148,6 +153,7 @@ function GameWindow({ onClose }) {
 function App() {
     const [isMenuOpen, setIsMenuOpen] = React.useState(false);
     const [isPlaying, setIsPlaying] = React.useState(false);
+    const gameButtonRef = React.useRef(null);
 
     // Team Carousel State
     const teamImages = [
@@ -296,6 +302,7 @@ function App() {
                                 </p>
                                 <div className="flex flex-wrap gap-6">
                                     <button
+                                        ref={gameButtonRef}
                                         onClick={() => setIsPlaying(true)}
                                         className="bg-[#f27d26] text-white px-10 py-5 rounded-full font-bold uppercase tracking-widest text-xs hover:bg-[#d96a1d] transition-all flex items-center gap-3 group"
                                     >
@@ -523,7 +530,10 @@ function App() {
                 </section>
             </main>
 
-            {isPlaying && <GameWindow onClose={() => setIsPlaying(false)} />}
+            {isPlaying && <GameWindow onClose={() => {
+                setIsPlaying(false);
+                gameButtonRef.current?.focus({ preventScroll: true });
+            }} />}
 
             {/* Footer */}
             <footer className="bg-[#050505] border-t border-white/10 py-20">
