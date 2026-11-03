@@ -57,10 +57,22 @@ test('navigation and mobile menu reach the contact section', async ({ page, isMo
 test('game opens and closes without navigating away', async ({ page }) => {
   await page.goto('/');
   await page.getByRole('button', { name: 'PLAY A GAME' }).click();
+  await expect(page.getByRole('dialog', { name: 'Ponganoid' })).toBeVisible();
   await expect(page.getByTitle('Ponganoid Game')).toHaveAttribute('src', 'https://ponganoid-777006893258.us-west1.run.app');
   await expect(page.frameLocator('iframe').getByRole('heading', { name: 'Ponganoid test frame' })).toBeVisible();
   await page.getByRole('button', { name: 'Close Game' }).click();
   await expect(page.locator('iframe')).toHaveCount(0);
+  await expect(page.getByRole('button', { name: 'PLAY A GAME' })).toBeFocused();
+  await page.getByRole('button', { name: 'PLAY A GAME' }).click();
+  const box = await page.getByTitle('Ponganoid Game').boundingBox();
+  const viewport = page.viewportSize();
+  expect(box.width).toBeGreaterThan(viewport.width * 0.8);
+  expect(box.y + box.height).toBeLessThanOrEqual(viewport.height);
+  await test.step('Escape closes the window and restores page scrolling', async () => {
+    await page.keyboard.press('Escape');
+    await expect(page.getByRole('dialog')).toHaveCount(0);
+    expect(await page.evaluate(() => document.body.style.overflow)).not.toBe('hidden');
+  });
 });
 
 test('contact success and failure preserve fields and reuse the request id on retry', async ({ page }) => {
