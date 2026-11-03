@@ -61,6 +61,6 @@
 .game-window-header h2 { font-weight: 700; }
 .game-window-frame { width: 100%; flex: 1; min-height: 0; border: 0; background: #050505; }
 @media (max-width: 640px) {
-  .game-window { width: 100vw; height: 100dvh; border-radius: 0; }
+  .game-window { width: auto; height: auto; margin: 0; border-radius: 0; }
   .game-window-header { padding: 8px; font-size: 14px; }
 }
